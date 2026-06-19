@@ -48,39 +48,32 @@ function App() {
   }
 
   return (
-    <div className="dashboard-container">
-      <div className="bg-glow-orb"></div>
-      <div className="bg-glow-orb-2"></div>
-      <motion.header 
-        className="header antigravity-glass-card"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, type: 'spring' }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Activity color="var(--accent-cyan)" size={28} />
-          <h1>NOCTURNAL: Procurement Risk Radar</h1>
-        </div>
+    <>
+      <div className="grain-overlay"></div>
+      <div className="dashboard-container">
+        <header className="header">
+          <div>
+            <h1>NOCTURNAL</h1>
+            <div className="header-subtitle">National Procurement Risk Radar</div>
+          </div>
+          
+          <div className="tabs">
+            <button 
+              className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+              onClick={() => setActiveTab('map')}
+            >
+              Peta Nasional
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'data' ? 'active' : ''}`}
+              onClick={() => setActiveTab('data')}
+            >
+              Arsip Data
+            </button>
+          </div>
+        </header>
         
-        <div className="tabs">
-          <button 
-            className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
-            onClick={() => setActiveTab('map')}
-          >
-            <MapIcon size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '6px' }} />
-            Peta Nasional
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'data' ? 'active' : ''}`}
-            onClick={() => setActiveTab('data')}
-          >
-            <Database size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '6px' }} />
-            Data Explorer
-          </button>
-        </div>
-      </motion.header>
-      
-      <main className="main-content">
+        <main className="main-content">
         <AnimatePresence mode="wait">
           {activeTab === 'map' && (
             <motion.div 
@@ -116,6 +109,7 @@ function App() {
         </AnimatePresence>
       </main>
     </div>
+    </>
   );
 }
 

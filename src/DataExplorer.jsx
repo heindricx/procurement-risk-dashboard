@@ -95,10 +95,10 @@ export const DataExplorer = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="filters-bar antigravity-glass-card" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ color: 'var(--accent-cyan)', fontWeight: 600, marginRight: 'auto', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="academia-card" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{ color: 'var(--mahogany)', fontWeight: 600, marginRight: 'auto', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Database size={20} />
-          Supabase Grid ({totalCount.toLocaleString('id-ID')} Records)
+          Arsip Data Intelijen ({totalCount.toLocaleString('id-ID')} Entri)
         </div>
         
         <div style={{ position: 'relative' }}>
@@ -132,13 +132,13 @@ export const DataExplorer = () => {
         />
       </div>
 
-      <div className="data-table-wrapper" style={{ position: 'relative' }}>
+      <div className="academia-card academia-table-container" style={{ position: 'relative' }}>
         {loading && (
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(5,7,10,0.5)', zIndex: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div className="spinner"></div>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(244, 241, 235, 0.7)', zIndex: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ color: 'var(--mahogany)', fontStyle: 'italic', fontFamily: 'var(--font-display)', fontSize: '1.2rem' }}>Mengambil arsip...</div>
           </div>
         )}
-        <table className="nemesis-table">
+        <table className="academia-table">
           <thead>
             <tr>
               <th>Agenda</th>
@@ -188,16 +188,16 @@ export const DataExplorer = () => {
         </table>
       </div>
 
-      <div className="pagination">
-        <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', padding: '0 1rem' }}>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
           Halaman {page} dari {totalPages || 1}
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="page-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
-            Previous
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <button className="academia-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+            Kembali
           </button>
-          <button className="page-btn" disabled={page >= totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)}>
-            Next
+          <button className="academia-btn" disabled={page >= totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)}>
+            Lanjut
           </button>
         </div>
       </div>

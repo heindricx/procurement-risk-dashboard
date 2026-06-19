@@ -1,6 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { AntigravityCard } from './AntigravityCard';
 
 export const RankingsTable = ({ provinces }) => {
   if (!provinces || provinces.length === 0) return null;
@@ -15,36 +13,31 @@ export const RankingsTable = ({ provinces }) => {
   };
 
   return (
-    <AntigravityCard 
-      style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-      delay={0.4}
-    >
-      <h3 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Top 10 Provinsi Risiko Tertinggi</h3>
-      <div style={{ overflowY: 'auto', flex: 1 }}>
-        <table className="ranking-table">
+    <div className="academia-card" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <h3 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Top 10 Provinsi Risiko Tertinggi</h3>
+      <div className="academia-table-container" style={{ flex: 1 }}>
+        <table className="academia-table">
           <thead>
             <tr>
               <th>Provinsi</th>
-              <th>Anomali</th>
-              <th>Potensi Kerugian</th>
+              <th>Proyek</th>
+              <th>Potensi Risiko</th>
             </tr>
           </thead>
           <tbody>
-            {sorted.map((p, idx) => (
-              <motion.tr 
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: 0.5 + (idx * 0.05) }}
-              >
-                <td>{p.provinsi}</td>
+            {sorted.map((p, i) => (
+              <tr key={i}>
+                <td>
+                  <span style={{ color: 'var(--text-muted)', marginRight: '8px', fontSize: '0.8em' }}>{i + 1}</span>
+                  {p.provinsi}
+                </td>
                 <td>{p.total_anomalies.toLocaleString('id-ID')}</td>
-                <td style={{ color: 'var(--accent-red)', fontWeight: 600 }}>{formatRp(p.total_fraud_value_rp)}</td>
-              </motion.tr>
+                <td style={{ color: 'var(--blood)', fontWeight: 600 }}>{formatRp(p.total_fraud_value_rp)}</td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </AntigravityCard>
+    </div>
   );
 };

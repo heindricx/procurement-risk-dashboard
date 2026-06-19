@@ -1,13 +1,12 @@
 import React from 'react';
-import { AntigravityCard } from './AntigravityCard';
 
-const StatCard = ({ title, value, subtitle, type, delay }) => {
+const StatCard = ({ title, value, subtitle, type }) => {
   return (
-    <AntigravityCard className={`stat-card ${type}`} delay={delay}>
+    <div className={`academia-card stat-card ${type}`}>
       <h3>{title}</h3>
       <div className="value">{value}</div>
       <div className="subtitle">{subtitle}</div>
-    </AntigravityCard>
+    </div>
   );
 };
 
