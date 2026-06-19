@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Tooltip } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 
 export const MapComponent = ({ geoData, riskData }) => {
@@ -16,15 +16,14 @@ export const MapComponent = ({ geoData, riskData }) => {
   });
 
   const getColor = (fraudValue) => {
-    if (!fraudValue) return 'transparent'; // Let the Google Map show through
+    if (!fraudValue) return '#2c3e50';
     // Logarithmic scale for color
     const ratio = Math.pow(fraudValue / maxFraud, 0.5);
     
-    // Gradient from Google Yellow to Google Red
-    // Yellow: 251, 188, 4 -> Red: 234, 67, 53
-    const r = Math.floor(251 - (17 * ratio));
-    const g = Math.floor(188 - (121 * ratio));
-    const b = Math.floor(4 + (49 * ratio));
+    // Gradient from dark blue to bright red
+    const r = Math.floor(20 + (235 * ratio));
+    const g = Math.floor(40 - (40 * ratio));
+    const b = Math.floor(80 - (80 * ratio));
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -32,15 +31,13 @@ export const MapComponent = ({ geoData, riskData }) => {
   const style = (feature) => {
     const pName = feature.properties.Propinsi.toUpperCase();
     const data = riskMap[pName];
-    const hasData = data && data.total_fraud_value_rp > 0;
-    
     return {
       fillColor: getColor(data?.total_fraud_value_rp),
-      weight: hasData ? 1.5 : 1,
+      weight: 1,
       opacity: 1,
-      color: hasData ? '#ea4335' : '#bdc1c6', // Google Red or Google Grey border
-      dashArray: hasData ? '' : '4',
-      fillOpacity: hasData ? 0.6 : 0.1 // Semi-transparent so map labels show through
+      color: 'rgba(255,255,255,0.2)',
+      dashArray: '3',
+      fillOpacity: 0.8
     };
   };
 
@@ -59,10 +56,10 @@ export const MapComponent = ({ geoData, riskData }) => {
       mouseover: (e) => {
         const layer = e.target;
         layer.setStyle({
-          weight: hasData ? 3 : 2,
-          color: hasData ? '#b31412' : '#80868b', // Darker Google Red or Grey
+          weight: 3,
+          color: '#fff',
           dashArray: '',
-          fillOpacity: hasData ? 0.8 : 0.3
+          fillOpacity: 1
         });
         layer.bringToFront();
       },
@@ -88,11 +85,12 @@ export const MapComponent = ({ geoData, riskData }) => {
         center={[-2.5, 118.0]} 
         zoom={5} 
         style={{ height: '100%', width: '100%' }}
-        zoomControl={false}
+        zoomControl={true}
+        scrollWheelZoom={true}
       >
         <TileLayer
-          url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-          attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
         />
         <GeoJSON 
           data={geoData} 

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "leaflet/dist/leaflet.css";
 
 :root {
   /* Apple/Google Colors */
@@ -240,6 +241,12 @@ button.modern-btn:disabled {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-light);
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background-color: #0d121c;
 }
 
 /* Custom Tooltip */
