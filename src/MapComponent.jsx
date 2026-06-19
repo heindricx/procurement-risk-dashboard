@@ -16,14 +16,15 @@ export const MapComponent = ({ geoData, riskData }) => {
   });
 
   const getColor = (fraudValue) => {
-    if (!fraudValue) return '#2c3e50';
+    if (!fraudValue) return 'transparent'; // Let the Google Map show through
     // Logarithmic scale for color
     const ratio = Math.pow(fraudValue / maxFraud, 0.5);
     
-    // Gradient from primary blue to danger red
-    const r = Math.floor(0 + (255 * ratio));
-    const g = Math.floor(113 - (54 * ratio));
-    const b = Math.floor(227 - (179 * ratio));
+    // Gradient from Google Yellow to Google Red
+    // Yellow: 251, 188, 4 -> Red: 234, 67, 53
+    const r = Math.floor(251 - (17 * ratio));
+    const g = Math.floor(188 - (121 * ratio));
+    const b = Math.floor(4 + (49 * ratio));
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -31,13 +32,15 @@ export const MapComponent = ({ geoData, riskData }) => {
   const style = (feature) => {
     const pName = feature.properties.Propinsi.toUpperCase();
     const data = riskMap[pName];
+    const hasData = data && data.total_fraud_value_rp > 0;
+    
     return {
       fillColor: getColor(data?.total_fraud_value_rp),
-      weight: 1,
+      weight: hasData ? 1.5 : 1,
       opacity: 1,
-      color: 'var(--surface-color)',
-      dashArray: '',
-      fillOpacity: 0.8
+      color: hasData ? '#ea4335' : '#bdc1c6', // Google Red or Google Grey border
+      dashArray: hasData ? '' : '4',
+      fillOpacity: hasData ? 0.6 : 0.1 // Semi-transparent so map labels show through
     };
   };
 
@@ -56,10 +59,10 @@ export const MapComponent = ({ geoData, riskData }) => {
       mouseover: (e) => {
         const layer = e.target;
         layer.setStyle({
-          weight: 2,
-          color: 'var(--text-main)',
+          weight: hasData ? 3 : 2,
+          color: hasData ? '#b31412' : '#80868b', // Darker Google Red or Grey
           dashArray: '',
-          fillOpacity: 1
+          fillOpacity: hasData ? 0.8 : 0.3
         });
         layer.bringToFront();
       },
@@ -88,8 +91,8 @@ export const MapComponent = ({ geoData, riskData }) => {
         zoomControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+          url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+          attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a>'
         />
         <GeoJSON 
           data={geoData} 
