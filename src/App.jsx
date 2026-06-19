@@ -59,7 +59,7 @@ function App() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Activity color="var(--accent-cyan)" size={28} />
-          <h1>NEMESIS: Procurement Risk Radar</h1>
+          <h1>NOCTURNAL: Procurement Risk Radar</h1>
         </div>
         
         <div className="tabs">
