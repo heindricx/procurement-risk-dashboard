@@ -95,7 +95,7 @@ export const DataExplorer = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="filters-bar glass-panel" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="filters-bar antigravity-glass-card" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         <div style={{ color: 'var(--accent-cyan)', fontWeight: 600, marginRight: 'auto', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Database size={20} />
           Supabase Grid ({totalCount.toLocaleString('id-ID')} Records)

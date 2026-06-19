@@ -23,13 +23,62 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-dark);
+  background: #0f0c1b; /* Deep Space */
   color: var(--text-main);
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05), transparent 25%),
-    radial-gradient(circle at 90% 80%, rgba(255, 42, 42, 0.05), transparent 25%);
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Glow Orb */
+.bg-glow-orb {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(111,0,255,0.2) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(50px);
+  z-index: -1;
+  top: -100px;
+  left: -100px;
+  pointer-events: none;
+}
+
+.bg-glow-orb-2 {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.15) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(60px);
+  z-index: -1;
+  bottom: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+/* Antigravity Glass Card */
+@keyframes antigravityFloat {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.antigravity-glass-card {
+    background: rgba(255, 255, 255, 0.03); 
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    padding: 1.5rem;
+    animation: antigravityFloat 6s ease-in-out infinite;
+    will-change: transform, backdrop-filter;
+    transition: transform 0.5s ease, border-color 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.antigravity-glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .dashboard-container {

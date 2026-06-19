@@ -49,8 +49,10 @@ function App() {
 
   return (
     <div className="dashboard-container">
+      <div className="bg-glow-orb"></div>
+      <div className="bg-glow-orb-2"></div>
       <motion.header 
-        className="header"
+        className="header antigravity-glass-card"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, type: 'spring' }}

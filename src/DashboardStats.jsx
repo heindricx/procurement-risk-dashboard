@@ -1,19 +1,13 @@
 import React from 'react';
-
-import { motion } from 'framer-motion';
+import { AntigravityCard } from './AntigravityCard';
 
 const StatCard = ({ title, value, subtitle, type, delay }) => {
   return (
-    <motion.div 
-      className={`glass-panel stat-card ${type}`}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay }}
-    >
+    <AntigravityCard className={`stat-card ${type}`} delay={delay}>
       <h3>{title}</h3>
       <div className="value">{value}</div>
       <div className="subtitle">{subtitle}</div>
-    </motion.div>
+    </AntigravityCard>
   );
 };
 

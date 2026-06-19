@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { AntigravityCard } from './AntigravityCard';
 
 export const RankingsTable = ({ provinces }) => {
   if (!provinces || provinces.length === 0) return null;
@@ -14,12 +15,9 @@ export const RankingsTable = ({ provinces }) => {
   };
 
   return (
-    <motion.div 
-      className="glass-panel" 
+    <AntigravityCard 
       style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, delay: 0.4 }}
+      delay={0.4}
     >
       <h3 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Top 10 Provinsi Risiko Tertinggi</h3>
       <div style={{ overflowY: 'auto', flex: 1 }}>
@@ -47,6 +45,6 @@ export const RankingsTable = ({ provinces }) => {
           </tbody>
         </table>
       </div>
-    </motion.div>
+    </AntigravityCard>
   );
 };
