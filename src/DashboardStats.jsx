@@ -1,12 +1,19 @@
 import React from 'react';
 
-const StatCard = ({ title, value, subtitle, type }) => {
+import { motion } from 'framer-motion';
+
+const StatCard = ({ title, value, subtitle, type, delay }) => {
   return (
-    <div className={`glass-panel stat-card ${type}`}>
+    <motion.div 
+      className={`glass-panel stat-card ${type}`}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, delay }}
+    >
       <h3>{title}</h3>
       <div className="value">{value}</div>
       <div className="subtitle">{subtitle}</div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -29,18 +36,21 @@ export const DashboardStats = ({ metadata }) => {
         value={metadata.total_national_anomalies.toLocaleString('id-ID')} 
         subtitle={`${anomalyRate}% dari total proyek nasional`}
         type="danger"
+        delay={0.1}
       />
       <StatCard 
         title="Potensi Kerugian/Fraud" 
         value={formatRp(metadata.total_national_fraud_value_rp)} 
         subtitle="Akumulasi markup melebihi P90"
         type="warning"
+        delay={0.2}
       />
       <StatCard 
         title="Total Pengadaan" 
         value={metadata.total_national_projects.toLocaleString('id-ID')} 
         subtitle={`Total Pagu: ${formatRp(metadata.total_national_pagu_rp)}`}
         type="info"
+        delay={0.3}
       />
     </>
   );

@@ -2,14 +2,17 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --bg-dark: #0a0e17;
-  --panel-bg: rgba(17, 25, 40, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.125);
-  --accent-red: #ff3b30;
-  --accent-orange: #ff9500;
-  --accent-blue: #0a84ff;
-  --text-main: #f2f2f7;
-  --text-muted: #aeaeb2;
+  --bg-dark: #05070a; /* Deeper cyberpunk dark */
+  --panel-bg: rgba(10, 15, 25, 0.7);
+  --panel-bg-hover: rgba(15, 22, 35, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-glow: rgba(0, 255, 255, 0.3);
+  --accent-red: #ff2a2a;
+  --accent-orange: #ff8c00;
+  --accent-blue: #00d2ff;
+  --accent-cyan: #00ffff;
+  --text-main: #f0f0f5;
+  --text-muted: #8b949e;
 }
 
 * {
@@ -23,8 +26,8 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(255, 59, 48, 0.08), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(10, 132, 255, 0.08), transparent 25%);
+    radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05), transparent 25%),
+    radial-gradient(circle at 90% 80%, rgba(255, 42, 42, 0.05), transparent 25%);
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -37,26 +40,68 @@ body {
   gap: 1.5rem;
 }
 
+/* Header & Navigation */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
   background: var(--panel-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  opacity: 0.5;
 }
 
 .header h1 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.5px;
-  background: linear-gradient(90deg, #fff, #aeaeb2);
+  background: linear-gradient(90deg, #fff, var(--accent-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+}
+
+.tab-button {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-button:hover {
+  color: var(--text-main);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.tab-button.active {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+  background: rgba(0, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
 }
 
 .main-content {
@@ -74,35 +119,32 @@ body {
   overflow-y: auto;
 }
 
-.sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
 
 .glass-panel {
   background: var(--panel-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
 }
 
 .glass-panel:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255,255,255,0.15);
 }
 
 .stat-card h3 {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin-bottom: 0.5rem;
 }
 
@@ -110,17 +152,12 @@ body {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
+  text-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
-.stat-card.danger .value {
-  color: var(--accent-red);
-}
-.stat-card.warning .value {
-  color: var(--accent-orange);
-}
-.stat-card.info .value {
-  color: var(--accent-blue);
-}
+.stat-card.danger .value { color: var(--accent-red); text-shadow: 0 0 20px rgba(255, 42, 42, 0.3); }
+.stat-card.warning .value { color: var(--accent-orange); text-shadow: 0 0 20px rgba(255, 140, 0, 0.3); }
+.stat-card.info .value { color: var(--accent-cyan); text-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
 
 .stat-card .subtitle {
   font-size: 0.875rem;
@@ -132,42 +169,162 @@ body {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 .leaflet-container {
   height: 100%;
   width: 100%;
-  background-color: #0d121c;
+  background-color: #030508;
 }
 
-/* Ranking Table */
+/* Data Explorer View */
+.data-explorer-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filter-select {
+  background: rgba(10, 15, 25, 0.8);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  min-width: 180px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%238b949e%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat, repeat;
+  background-position: right .7em top 50%, 0 0;
+  background-size: .65em auto, 100%;
+}
+
+.filter-select:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.filter-select option {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+}
+
+.data-table-wrapper {
+  flex: 1;
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: var(--panel-bg);
+  backdrop-filter: blur(20px);
+}
+
+.data-table-wrapper::-webkit-scrollbar { width: 6px; height: 6px;}
+.data-table-wrapper::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 6px; }
+
+.nemesis-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.nemesis-table th {
+  position: sticky;
+  top: 0;
+  background: rgba(5, 7, 10, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--glass-border);
+  z-index: 1;
+}
+
+.nemesis-table td {
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-main);
+}
+
+.nemesis-table tr {
+  transition: background-color 0.2s ease;
+}
+
+.nemesis-table tr:hover td {
+  background-color: rgba(255,255,255,0.05);
+}
+
+.val-danger {
+  color: var(--accent-red);
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(255,42,42,0.2);
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.page-btn {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ranking Table (from previous) */
 .ranking-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
 }
-
 .ranking-table th, .ranking-table td {
   padding: 0.75rem 0.5rem;
   text-align: left;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-
 .ranking-table th {
   color: var(--text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
-.ranking-table td {
-  font-size: 0.875rem;
-}
-
-.ranking-table tr:hover td {
-  background-color: rgba(255,255,255,0.03);
-}
+.ranking-table td { font-size: 0.875rem; }
 
 .loading-screen {
   position: fixed;
@@ -184,7 +341,7 @@ body {
   height: 40px;
   border: 3px solid rgba(255,255,255,0.1);
   border-radius: 50%;
-  border-top-color: var(--accent-blue);
+  border-top-color: var(--accent-cyan);
   animation: spin 1s ease-in-out infinite;
 }
 
@@ -192,24 +349,24 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* Custom Leaflet Tooltip */
 .custom-tooltip {
-  background: rgba(17, 25, 40, 0.9) !important;
-  border: 1px solid var(--glass-border) !important;
+  background: rgba(5, 7, 10, 0.9) !important;
+  border: 1px solid var(--accent-cyan) !important;
   color: white !important;
   border-radius: 8px !important;
-  padding: 10px !important;
+  padding: 12px !important;
   backdrop-filter: blur(10px) !important;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+  box-shadow: 0 4px 20px rgba(0,255,255,0.1) !important;
 }
 
 .custom-tooltip h4 {
-  margin: 0 0 5px 0;
-  color: var(--accent-orange);
+  margin: 0 0 8px 0;
+  color: var(--accent-cyan);
   border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 5px;
+  padding-bottom: 8px;
+  letter-spacing: 1px;
 }
 .custom-tooltip p {
-  margin: 2px 0;
+  margin: 4px 0;
   font-size: 13px;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export const RankingsTable = ({ provinces }) => {
   if (!provinces || provinces.length === 0) return null;
@@ -13,7 +14,13 @@ export const RankingsTable = ({ provinces }) => {
   };
 
   return (
-    <div className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+    <motion.div 
+      className="glass-panel" 
+      style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, delay: 0.4 }}
+    >
       <h3 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Top 10 Provinsi Risiko Tertinggi</h3>
       <div style={{ overflowY: 'auto', flex: 1 }}>
         <table className="ranking-table">
@@ -26,15 +33,20 @@ export const RankingsTable = ({ provinces }) => {
           </thead>
           <tbody>
             {sorted.map((p, idx) => (
-              <tr key={idx}>
+              <motion.tr 
+                key={idx}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.5 + (idx * 0.05) }}
+              >
                 <td>{p.provinsi}</td>
                 <td>{p.total_anomalies.toLocaleString('id-ID')}</td>
                 <td style={{ color: 'var(--accent-red)', fontWeight: 600 }}>{formatRp(p.total_fraud_value_rp)}</td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </motion.div>
   );
 };
