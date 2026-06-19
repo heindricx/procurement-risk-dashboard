@@ -95,14 +95,14 @@ export const DataExplorer = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="academia-card" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div style={{ color: 'var(--mahogany)', fontWeight: 600, marginRight: 'auto', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Database size={20} />
-          Arsip Data Intelijen ({totalCount.toLocaleString('id-ID')} Entri)
+      <div className="modern-card" style={{ padding: '1rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{ color: 'var(--text-main)', fontWeight: 600, marginRight: 'auto', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Database size={20} color="var(--primary-blue)" />
+          Arsip Data ({totalCount.toLocaleString('id-ID')} Entri)
         </div>
         
         <div style={{ position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
           <input 
             type="text" 
             placeholder="Cari Agenda..." 
@@ -132,13 +132,15 @@ export const DataExplorer = () => {
         />
       </div>
 
-      <div className="academia-card academia-table-container" style={{ position: 'relative' }}>
+      <div className="modern-card table-container" style={{ position: 'relative', padding: 0, overflow: 'hidden' }}>
         {loading && (
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(244, 241, 235, 0.7)', zIndex: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ color: 'var(--mahogany)', fontStyle: 'italic', fontFamily: 'var(--font-display)', fontSize: '1.2rem' }}>Mengambil arsip...</div>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(255, 255, 255, 0.8)', zIndex: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ color: 'var(--primary-blue)', fontWeight: 600, fontFamily: 'var(--font-sans)', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="spinner" style={{ width: '24px', height: '24px', borderWidth: '3px' }}></div> Memuat Data...
+            </div>
           </div>
         )}
-        <table className="academia-table">
+        <table className="modern-table">
           <thead>
             <tr>
               <th>Agenda</th>
@@ -164,22 +166,24 @@ export const DataExplorer = () => {
                   </div>
                 </td>
                 <td>
-                  <div style={{ fontWeight: 500 }}>{row.lembaga}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{row.satker}</div>
+                  <div style={{ fontWeight: 600 }}>{row.lembaga}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{row.satker}</div>
                 </td>
                 <td>
-                  <div>{row.provinsi}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{row.kota}</div>
+                  <div style={{ fontWeight: 500 }}>{row.provinsi}</div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{row.kota}</div>
                 </td>
-                <td>{row.metode}</td>
-                <td style={{ color: 'var(--text-muted)' }}>{formatRp(row.pagu)}</td>
-                <td style={{ color: 'var(--text-muted)' }}>{formatRp(row.p90)}</td>
-                <td className="val-danger">{row.fraud_value > 0 ? '+' : ''}{formatRp(row.fraud_value)}</td>
+                <td><span style={{ background: 'rgba(0,0,0,0.05)', padding: '4px 8px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 500 }}>{row.metode}</span></td>
+                <td style={{ color: 'var(--text-secondary)' }}>{formatRp(row.pagu)}</td>
+                <td style={{ color: 'var(--text-secondary)' }}>{formatRp(row.p90)}</td>
+                <td style={{ color: row.fraud_value > 0 ? 'var(--danger-red)' : 'inherit', fontWeight: row.fraud_value > 0 ? 600 : 400 }}>
+                  {row.fraud_value > 0 ? '+' : ''}{formatRp(row.fraud_value)}
+                </td>
               </motion.tr>
             ))}
             {data.length === 0 && !loading && (
               <tr>
-                <td colSpan="7" style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                <td colSpan="7" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
                   Tidak ada data yang ditemukan.
                 </td>
               </tr>
@@ -188,15 +192,15 @@ export const DataExplorer = () => {
         </table>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', padding: '0 1rem' }}>
-        <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', padding: '0 0.5rem' }}>
+        <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
           Halaman {page} dari {totalPages || 1}
         </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="academia-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="modern-btn" disabled={page === 1} onClick={() => setPage(p => p - 1)}>
             Kembali
           </button>
-          <button className="academia-btn" disabled={page >= totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)}>
+          <button className="modern-btn" disabled={page >= totalPages || totalPages === 0} onClick={() => setPage(p => p + 1)}>
             Lanjut
           </button>
         </div>

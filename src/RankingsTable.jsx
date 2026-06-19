@@ -13,10 +13,10 @@ export const RankingsTable = ({ provinces }) => {
   };
 
   return (
-    <div className="academia-card" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <h3 style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Top 10 Provinsi Risiko Tertinggi</h3>
-      <div className="academia-table-container" style={{ flex: 1 }}>
-        <table className="academia-table">
+    <div className="modern-card" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <h3 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem', fontWeight: 600 }}>Top 10 Provinsi Risiko Tertinggi</h3>
+      <div className="table-container" style={{ flex: 1 }}>
+        <table className="modern-table">
           <thead>
             <tr>
               <th>Provinsi</th>
@@ -28,11 +28,11 @@ export const RankingsTable = ({ provinces }) => {
             {sorted.map((p, i) => (
               <tr key={i}>
                 <td>
-                  <span style={{ color: 'var(--text-muted)', marginRight: '8px', fontSize: '0.8em' }}>{i + 1}</span>
+                  <span style={{ color: 'var(--text-secondary)', marginRight: '8px', fontSize: '0.85em', fontWeight: 600 }}>{i + 1}</span>
                   {p.provinsi}
                 </td>
                 <td>{p.total_anomalies.toLocaleString('id-ID')}</td>
-                <td style={{ color: 'var(--blood)', fontWeight: 600 }}>{formatRp(p.total_fraud_value_rp)}</td>
+                <td style={{ color: 'var(--danger-red)', fontWeight: 600 }}>{formatRp(p.total_fraud_value_rp)}</td>
               </tr>
             ))}
           </tbody>

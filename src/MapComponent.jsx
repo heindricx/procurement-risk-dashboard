@@ -20,10 +20,10 @@ export const MapComponent = ({ geoData, riskData }) => {
     // Logarithmic scale for color
     const ratio = Math.pow(fraudValue / maxFraud, 0.5);
     
-    // Gradient from pale yellow/gold to deep blood red
-    const r = Math.floor(255 - (87 * ratio)); // 255 -> 168
-    const g = Math.floor(245 - (186 * ratio)); // 245 -> 59
-    const b = Math.floor(220 - (178 * ratio)); // 220 -> 42
+    // Gradient from primary blue to danger red
+    const r = Math.floor(0 + (255 * ratio));
+    const g = Math.floor(113 - (54 * ratio));
+    const b = Math.floor(227 - (179 * ratio));
     
     return `rgb(${r}, ${g}, ${b})`;
   };
@@ -35,8 +35,8 @@ export const MapComponent = ({ geoData, riskData }) => {
       fillColor: getColor(data?.total_fraud_value_rp),
       weight: 1,
       opacity: 1,
-      color: 'var(--panel-border)',
-      dashArray: '3',
+      color: 'var(--surface-color)',
+      dashArray: '',
       fillOpacity: 0.8
     };
   };
@@ -57,7 +57,7 @@ export const MapComponent = ({ geoData, riskData }) => {
         const layer = e.target;
         layer.setStyle({
           weight: 2,
-          color: 'var(--blood)',
+          color: 'var(--text-main)',
           dashArray: '',
           fillOpacity: 1
         });
@@ -69,14 +69,14 @@ export const MapComponent = ({ geoData, riskData }) => {
     });
 
     const tooltipContent = `
-      <div class="academia-tooltip">
-        <h4 style="font-family: var(--font-display); color: var(--mahogany); border-bottom: 1px solid var(--panel-border); margin-bottom: 5px; padding-bottom: 5px;">${pName}</h4>
-        <p style="margin: 3px 0; font-size: 0.9em; color: var(--text-body);">Total Proyek: <b>${data ? data.total_projects.toLocaleString('id-ID') : 0}</b></p>
-        <p style="margin: 3px 0; font-size: 0.9em; color: var(--text-body);">Proyek Anomali: <b style="color: var(--mahogany-bright)">${data ? data.total_anomalies.toLocaleString('id-ID') : 0}</b></p>
-        <p style="margin: 3px 0; font-size: 0.9em; color: var(--text-body);">Potensi Kerugian: <b style="color: var(--blood)">${data ? formatRp(data.total_fraud_value_rp) : "Rp 0"}</b></p>
+      <div style="font-family: var(--font-sans);">
+        <h4 style="font-size: 1.1rem; color: var(--text-main); border-bottom: 1px solid var(--border-light); margin-bottom: 8px; padding-bottom: 8px; font-weight: 700;">${pName}</h4>
+        <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Total Proyek: <b style="color: var(--text-main)">${data ? data.total_projects.toLocaleString('id-ID') : 0}</b></p>
+        <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Proyek Anomali: <b style="color: var(--warning-orange)">${data ? data.total_anomalies.toLocaleString('id-ID') : 0}</b></p>
+        <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Potensi Kerugian: <b style="color: var(--danger-red)">${data ? formatRp(data.total_fraud_value_rp) : "Rp 0"}</b></p>
       </div>
     `;
-    layer.bindTooltip(tooltipContent, { sticky: true, className: 'leaflet-tooltip-academia' });
+    layer.bindTooltip(tooltipContent, { sticky: true, className: 'leaflet-tooltip-modern' });
   };
 
   return (
@@ -88,7 +88,7 @@ export const MapComponent = ({ geoData, riskData }) => {
         zoomControl={false}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
         />
         <GeoJSON 

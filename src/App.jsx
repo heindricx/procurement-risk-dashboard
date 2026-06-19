@@ -48,32 +48,30 @@ function App() {
   }
 
   return (
-    <>
-      <div className="grain-overlay"></div>
-      <div className="dashboard-container">
-        <header className="header">
-          <div>
-            <h1>NOCTURNAL</h1>
-            <div className="header-subtitle">National Procurement Risk Radar</div>
-          </div>
-          
-          <div className="tabs">
-            <button 
-              className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
-              onClick={() => setActiveTab('map')}
-            >
-              Peta Nasional
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'data' ? 'active' : ''}`}
-              onClick={() => setActiveTab('data')}
-            >
-              Arsip Data
-            </button>
-          </div>
-        </header>
+    <div className="dashboard-container">
+      <header className="header">
+        <div>
+          <h1>NOCTURNAL</h1>
+          <div className="header-subtitle">National Procurement Risk Radar</div>
+        </div>
         
-        <main className="main-content">
+        <div className="tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+            onClick={() => setActiveTab('map')}
+          >
+            Peta Nasional
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'data' ? 'active' : ''}`}
+            onClick={() => setActiveTab('data')}
+          >
+            Arsip Data
+          </button>
+        </div>
+      </header>
+      
+      <main className="main-content">
         <AnimatePresence mode="wait">
           {activeTab === 'map' && (
             <motion.div 
@@ -109,7 +107,6 @@ function App() {
         </AnimatePresence>
       </main>
     </div>
-    </>
   );
 }
 

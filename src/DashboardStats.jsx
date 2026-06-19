@@ -2,7 +2,7 @@ import React from 'react';
 
 const StatCard = ({ title, value, subtitle, type }) => {
   return (
-    <div className={`academia-card stat-card ${type}`}>
+    <div className={`modern-card stat-card ${type}`}>
       <h3>{title}</h3>
       <div className="value">{value}</div>
       <div className="subtitle">{subtitle}</div>
