@@ -19,7 +19,7 @@ function App() {
     const fetchData = async () => {
       try {
         const [riskRes, geoRes] = await Promise.all([
-          fetch(`/data/procurement_risk_map.json?v=${Date.now()}`),
+          fetch('/api/get_stats'),
           fetch('/data/indonesia.geojson')
         ]);
         

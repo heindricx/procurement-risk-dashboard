@@ -30,6 +30,8 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
   // Chart Data State
   const [chartData, setChartData] = useState([]);
   const [topLembagaData, setTopLembagaData] = useState([]);
+  const [topMethodsData, setTopMethodsData] = useState([]);
+  const [topSatkersData, setTopSatkersData] = useState([]);
 
   // Debounce logic
   useEffect(() => {
@@ -103,6 +105,7 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
         // Bar Chart (Top 5 Lembaga by average risk on this page)
         const lembagaScores = {};
         records.forEach(r => {
+          if (!r.lembaga) return;
           if (!lembagaScores[r.lembaga]) lembagaScores[r.lembaga] = { total: 0, count: 0 };
           lembagaScores[r.lembaga].total += r.skor_risiko;
           lembagaScores[r.lembaga].count += 1;
@@ -114,8 +117,41 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
           }))
           .sort((a,b) => b.avgRisk - a.avgRisk)
           .slice(0, 5);
-        
         setTopLembagaData(barFormatted);
+
+        // Bar Chart (Top 5 Metode by average risk on this page)
+        const metodeScores = {};
+        records.forEach(r => {
+          if (!r.metode) return;
+          if (!metodeScores[r.metode]) metodeScores[r.metode] = { total: 0, count: 0 };
+          metodeScores[r.metode].total += r.skor_risiko;
+          metodeScores[r.metode].count += 1;
+        });
+        const methodsFormatted = Object.keys(metodeScores)
+          .map(k => ({
+            name: k.substring(0, 15) + (k.length > 15 ? '...' : ''),
+            avgRisk: Math.round(metodeScores[k].total / metodeScores[k].count)
+          }))
+          .sort((a,b) => b.avgRisk - a.avgRisk)
+          .slice(0, 5);
+        setTopMethodsData(methodsFormatted);
+
+        // Bar Chart (Top 5 Satker by average risk on this page)
+        const satkerScores = {};
+        records.forEach(r => {
+          if (!r.satker) return;
+          if (!satkerScores[r.satker]) satkerScores[r.satker] = { total: 0, count: 0 };
+          satkerScores[r.satker].total += r.skor_risiko;
+          satkerScores[r.satker].count += 1;
+        });
+        const satkersFormatted = Object.keys(satkerScores)
+          .map(k => ({
+            name: k.substring(0, 15) + (k.length > 15 ? '...' : ''),
+            avgRisk: Math.round(satkerScores[k].total / satkerScores[k].count)
+          }))
+          .sort((a,b) => b.avgRisk - a.avgRisk)
+          .slice(0, 5);
+        setTopSatkersData(satkersFormatted);
       }
 
     } catch (err) {
@@ -188,9 +224,9 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
     >
       
       {/* Analytics Dashboard (Responsive Grid) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         <div className="modern-card" style={{ height: '300px', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Distribusi Risiko Halaman Ini</h3>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Distribusi Risiko Halaman Ini</h3>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -212,14 +248,40 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
         </div>
 
         <div className="modern-card" style={{ height: '300px', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Top 5 Lembaga Berisiko</h3>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top 5 Lembaga Berisiko</h3>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={topLembagaData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} interval={0} angle={-15} textAnchor="end" />
-              <YAxis tick={{ fontSize: 11 }} />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" />
+              <YAxis tick={{ fontSize: 10 }} />
               <Tooltip cursor={{ fill: 'transparent' }} />
               <Bar dataKey="avgRisk" fill="var(--danger-red)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="modern-card" style={{ height: '300px', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top 5 Metode Berisiko</h3>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={topMethodsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip cursor={{ fill: 'transparent' }} />
+              <Bar dataKey="avgRisk" fill="var(--warning-orange)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="modern-card" style={{ height: '300px', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Top 5 Satker Berisiko</h3>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={topSatkersData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip cursor={{ fill: 'transparent' }} />
+              <Bar dataKey="avgRisk" fill="var(--primary-blue)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
