@@ -60,8 +60,7 @@ export default async function handler(req, res) {
     const numPage = parseInt(page, 10) || 1;
     const offset = (numPage - 1) * numLimit;
     
-    baseQuery += ` LIMIT ? OFFSET ?`;
-    values.push(numLimit, offset);
+    baseQuery += ` LIMIT ${numLimit} OFFSET ${offset}`;
 
     const [rows] = await connection.execute(baseQuery, values);
     
