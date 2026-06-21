@@ -4,12 +4,12 @@ import { supabase } from './supabaseClient';
 import { Search, Database, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-export const DataExplorer = () => {
+export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Filters (Immediate state for inputs)
-  const [filterProv, setFilterProv] = useState('');
+  const [filterProv, setFilterProv] = useState(initialProvince || '');
   const [filterMetode, setFilterMetode] = useState('');
   const [filterLembaga, setFilterLembaga] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,12 +36,20 @@ export const DataExplorer = () => {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedProv(filterProv);
+      if (onProvinceChange) onProvinceChange(filterProv);
       setDebouncedMetode(filterMetode);
       setDebouncedLembaga(filterLembaga);
       setDebouncedSearch(searchQuery);
     }, 500);
     return () => clearTimeout(handler);
   }, [filterProv, filterMetode, filterLembaga, searchQuery]);
+
+  // Handle incoming changes from Map clicking
+  useEffect(() => {
+    if (initialProvince !== undefined && initialProvince !== filterProv) {
+      setFilterProv(initialProvince);
+    }
+  }, [initialProvince]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);

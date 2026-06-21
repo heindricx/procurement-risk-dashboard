@@ -3,7 +3,7 @@ import { DashboardStats } from './DashboardStats';
 import { MapComponent } from './MapComponent';
 import { RankingsTable } from './RankingsTable';
 import { DataExplorer } from './DataExplorer';
-import { Activity, Map as MapIcon, Database } from 'lucide-react';
+import { Activity, Map as MapIcon, Database, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -12,6 +12,9 @@ function App() {
   const [geoData, setGeoData] = useState(null);
   const [anomaliesData, setAnomaliesData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // Global filter state to allow Map to communicate with DataExplorer
+  const [globalFilterProv, setGlobalFilterProv] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,69 +42,95 @@ function App() {
     fetchData();
   }, []);
 
+  const handleMapClick = (provinceName) => {
+    setGlobalFilterProv(provinceName);
+    setActiveTab('data');
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="spinner"></div>
+      <div className="loading-screen" style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#0f172a' }}>
+        <div className="spinner" style={{ width: '50px', height: '50px', borderTopColor: '#3b82f6' }}></div>
+        <h2 style={{ color: '#fff', marginTop: '1rem', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>Memuat PantaUang Kita...</h2>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-container">
-      <header className="header">
-        <div>
-          <h1>PANTAUANG KITA</h1>
-          <div className="header-subtitle">National Procurement Risk Radar</div>
+    <div className="dashboard-container" style={{ maxWidth: '1600px' }}>
+      
+      {/* Hero Section */}
+      <motion.header 
+        className="hero-section"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="hero-content">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem' }}>
+            <ShieldAlert size={40} color="var(--primary-blue)" />
+            <h1 className="hero-title">PANTAUANG KITA</h1>
+          </div>
+          <p className="hero-description">
+            Sistem Deteksi Dini (Early Warning System) Risiko Pengadaan Barang & Jasa Nasional berbasis *Machine Learning* dan *Quantile Regression*.
+          </p>
         </div>
         
-        <div className="tabs">
+        <div className="hero-nav">
           <button 
-            className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+            className={`hero-tab-btn ${activeTab === 'map' ? 'active' : ''}`}
             onClick={() => setActiveTab('map')}
           >
-            Peta Nasional
+            <MapIcon size={18} /> Radar Peta
           </button>
           <button 
-            className={`tab-btn ${activeTab === 'data' ? 'active' : ''}`}
+            className={`hero-tab-btn ${activeTab === 'data' ? 'active' : ''}`}
             onClick={() => setActiveTab('data')}
           >
-            Arsip Data
+            <Database size={18} /> Arsip Anomali
           </button>
         </div>
-      </header>
+      </motion.header>
       
-      <main className="main-content">
+      <main className="main-content-fluid">
         <AnimatePresence mode="wait">
           {activeTab === 'map' && (
             <motion.div 
               key="map-view"
-              className="main-content"
-              style={{ width: '100%' }}
+              className="map-layout-grid"
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4, type: "spring" }}
             >
-              <aside className="sidebar">
+              {/* Map taking prominent central/left space */}
+              <div className="map-primary-container">
+                <MapComponent geoData={geoData} riskData={riskData} onRegionClick={handleMapClick} />
+              </div>
+
+              {/* Sidebar stats on the right */}
+              <aside className="sidebar-stats">
                 <DashboardStats metadata={riskData?.metadata} />
-                <RankingsTable provinces={riskData?.provinces} />
+                <RankingsTable provinces={riskData?.provinces?.semua || riskData?.provinces} />
               </aside>
-              <MapComponent geoData={geoData} riskData={riskData} />
             </motion.div>
           )}
 
           {activeTab === 'data' && (
             <motion.div 
               key="data-view"
-              className="main-content"
               style={{ width: '100%' }}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, type: "spring" }}
             >
-              <DataExplorer anomalies={anomaliesData} />
+              <DataExplorer 
+                initialProvince={globalFilterProv} 
+                onProvinceChange={setGlobalFilterProv} 
+              />
             </motion.div>
           )}
         </AnimatePresence>
