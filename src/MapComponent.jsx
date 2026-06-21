@@ -9,8 +9,13 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
 
   if (!geoData || !riskData || !riskData.provinces) return null;
 
-  // Pilih tipe data
-  const currentProvincesData = riskData.provinces[filterType] || riskData.provinces['semua'];
+  // Jika format lama (array), gunakan langsung. Jika format baru (object), gunakan filterType.
+  const isOldFormat = Array.isArray(riskData.provinces);
+  let currentProvincesData = isOldFormat 
+    ? riskData.provinces 
+    : (riskData.provinces[filterType] || riskData.provinces['semua'] || []);
+
+  if (!Array.isArray(currentProvincesData)) currentProvincesData = [];
 
   // Map riskData by province name
   const riskMap = {};

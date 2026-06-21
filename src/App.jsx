@@ -20,7 +20,7 @@ function App() {
     const fetchData = async () => {
       try {
         const [riskRes, geoRes, anomaliesRes] = await Promise.all([
-          fetch('/data/procurement_risk_map.json'),
+          fetch(`/data/procurement_risk_map.json?v=${Date.now()}`),
           fetch('/data/indonesia.geojson'),
           fetch('/data/top_anomalies.json')
         ]);
@@ -100,10 +100,10 @@ function App() {
             <motion.div 
               key="map-view"
               className="map-layout-grid"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.4, type: "spring" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
             >
               {/* Map taking prominent central/left space */}
               <div className="map-primary-container">
