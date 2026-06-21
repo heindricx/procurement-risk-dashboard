@@ -60,8 +60,9 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
       if (debouncedLembaga) params.append('lembaga', debouncedLembaga);
       if (debouncedSearch) params.append('search', debouncedSearch);
       
-      // Limit set to 200 for frontend rendering performance
-      params.append('limit', '200');
+      // Server-side pagination parameters
+      params.append('limit', itemsPerPage.toString());
+      params.append('page', page.toString());
 
       const response = await fetch(`/api/get_anomalies?${params.toString()}`);
       if (!response.ok) {
@@ -70,9 +71,10 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
 
       const result = await response.json();
       const records = result.data || [];
+      const total = result.total || 0;
       
       setData(records);
-      setTotalCount(records.length);
+      setTotalCount(total);
 
       // Simple client-side aggregation for charts based on current page data 
       // (For real prod we would do a separate aggregated query, but this works for interactivity demonstration)

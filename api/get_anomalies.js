@@ -55,6 +55,14 @@ export default async function handler(req, res) {
     // Urutkan berdasarkan skor_risiko tertinggi
     baseQuery += ` ORDER BY skor_risiko DESC`;
 
+    // Count query to support real server-side pagination
+    let countQuery = `SELECT COUNT(*) AS total FROM procurement_anomalies`;
+    if (conditions.length > 0) {
+      countQuery += ` WHERE ` + conditions.join(' AND ');
+    }
+    const [countResult] = await connection.execute(countQuery, values);
+    const totalCount = countResult[0]?.total || 0;
+
     // Pagination
     const numLimit = parseInt(limit, 10) || 100;
     const numPage = parseInt(page, 10) || 1;
@@ -66,7 +74,7 @@ export default async function handler(req, res) {
     
     await connection.end();
 
-    return res.status(200).json({ data: rows });
+    return res.status(200).json({ data: rows, total: totalCount });
   } catch (error) {
     console.error('TiDB Error:', error);
     return res.status(500).json({ error: 'Failed to connect to TiDB Serverless', details: error.message });
