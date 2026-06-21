@@ -115,7 +115,7 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#7F1D1D' }}></div>
-            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Anomali Ekstrem (> 75)</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Anomali Ekstrem (&gt; 75)</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#EF4444' }}></div>
@@ -127,7 +127,7 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ width: '16px', height: '16px', borderRadius: '4px', background: '#10B981' }}></div>
-            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Risiko Rendah (< 35)</span>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>Risiko Rendah (&lt; 35)</span>
         </div>
       </div>
 
