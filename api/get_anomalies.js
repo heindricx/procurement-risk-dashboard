@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { prov, lembaga, search, limit = 100, page = 1 } = req.query;
+  const { prov, lembaga, metode, search, limit = 100, page = 1 } = req.query;
 
   try {
     // Buat koneksi ke TiDB Serverless
@@ -36,9 +36,14 @@ export default async function handler(req, res) {
       values.push(lembaga);
     }
 
+    if (metode) {
+      conditions.push('metode = ?');
+      values.push(metode);
+    }
+
     if (search) {
       // Pencarian gabungan pada lembaga, agenda, dan provinsi
-      conditions.push('(lembaga LIKE ? OR Agenda LIKE ? OR provinsi LIKE ?)');
+      conditions.push('(lembaga LIKE ? OR agenda LIKE ? OR provinsi LIKE ?)');
       const likeSearch = `%${search}%`;
       values.push(likeSearch, likeSearch, likeSearch);
     }

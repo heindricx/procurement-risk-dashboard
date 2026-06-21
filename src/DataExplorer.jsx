@@ -250,6 +250,15 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
           value={filterProv}
           onChange={e => setFilterProv(e.target.value)}
         />
+
+        <input 
+          type="text" 
+          placeholder="Metode..." 
+          className="filter-select"
+          style={{ backgroundImage: 'none', flexGrow: 1, minWidth: '150px' }}
+          value={filterMetode}
+          onChange={e => setFilterMetode(e.target.value)}
+        />
         
         <input 
           type="text" 

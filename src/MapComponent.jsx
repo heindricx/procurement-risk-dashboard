@@ -17,17 +17,68 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
 
   if (!Array.isArray(currentProvincesData)) currentProvincesData = [];
 
-  // Map riskData by province name
+  // Helper to normalize and unify province names between old GeoJSON and database
+  const normalizeProvince = (name) => {
+    if (!name) return '';
+    const clean = name.toUpperCase().replace(/[^A-Z]/g, '');
+    
+    if (clean.includes('ACEH') || clean === 'DIACEH') return 'ACEH';
+    if (clean.includes('BANTEN') || clean === 'PROBANTEN') return 'BANTEN';
+    if (clean.includes('BANGKABELITUNG') || clean === 'KEPBANGKABELITUNG') return 'BANGKABELITUNG';
+    if (clean.includes('YOGYAKARTA') || clean === 'DAERAHISTIMEWAYOGYAKARTA') return 'DIYOGYAKARTA';
+    if (clean.includes('JAKARTA') || clean === 'DKIJAKARTA') return 'DKIJAKARTA';
+    if (clean.includes('NUSATENGGARABARAT')) return 'NUSATENGGARABARAT';
+    if (clean.includes('NUSATENGGARATIMUR')) return 'NUSATENGGARATIMUR';
+    
+    // Papua mappings to old GeoJSON features
+    if (clean.includes('PAPUABARATDAYA') || clean.includes('PAPUABARAT') || clean.includes('IRIANJAYABARAT')) return 'IRIANJAYABARAT';
+    if (clean.includes('PAPUATENGAH') || clean.includes('IRIANJAYATENGAH')) return 'IRIANJAYATENGAH';
+    if (clean.includes('PAPUASELATAN') || clean.includes('PAPUAPEGUNUNGAN') || clean.includes('PAPUA') || clean.includes('IRIANJAYATIMUR')) return 'IRIANJAYATIMUR';
+    
+    // Mergers for newer provinces not in old GeoJSON
+    if (clean.includes('KEPULAUANRIAU')) return 'RIAU';
+    if (clean.includes('SULAWESIBARAT')) return 'SULAWESISELATAN';
+    if (clean.includes('KALIMANTANUTARA')) return 'KALIMANTANTIMUR';
+    
+    return clean;
+  };
+
+  // Map riskData by normalized province name
   const riskMap = {};
-  let maxScore = 0;
   currentProvincesData.forEach(p => {
-    const pName = p.provinsi.toUpperCase();
-    riskMap[pName] = p;
-    if (p.avg_skor_risiko > maxScore) maxScore = p.avg_skor_risiko;
+    const normName = normalizeProvince(p.provinsi);
+    if (!riskMap[normName]) {
+      riskMap[normName] = {
+        provinsi: p.provinsi, // Keep one representation for filtering
+        total_projects: 0,
+        total_anomalies: 0,
+        total_fraud_value_rp: 0,
+        avg_skor_risiko: 0,
+        count: 0
+      };
+    }
+    const rm = riskMap[normName];
+    rm.total_projects += p.total_projects || 0;
+    rm.total_anomalies += p.total_anomalies || 0;
+    rm.total_fraud_value_rp += p.total_fraud_value_rp || 0;
+    rm.avg_skor_risiko += p.avg_skor_risiko || 0;
+    rm.count += 1;
+  });
+
+  // Calculate averages and assign final categories for aggregated map view
+  Object.keys(riskMap).forEach(key => {
+    const rm = riskMap[key];
+    if (rm.count > 0) {
+      rm.avg_skor_risiko = rm.avg_skor_risiko / rm.count;
+    }
+    if (rm.avg_skor_risiko >= 75) rm.kategori_risiko = 'Anomali Ekstrem';
+    else if (rm.avg_skor_risiko >= 50) rm.kategori_risiko = 'Tinggi';
+    else if (rm.avg_skor_risiko >= 35) rm.kategori_risiko = 'Sedang';
+    else rm.kategori_risiko = 'Rendah';
   });
 
   const getColor = (kategori, score) => {
-    if (!kategori) return '#1e293b'; // Default dark blue for no data
+    if (!kategori || score === 0 || isNaN(score)) return '#1e293b'; // Default dark blue for no data
     if (kategori === 'Anomali Ekstrem') return '#7F1D1D';
     if (kategori === 'Tinggi') return '#EF4444';
     if (kategori === 'Sedang') return '#F59E0B';
@@ -35,7 +86,7 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
   };
 
   const style = (feature) => {
-    const pName = feature.properties.Propinsi.toUpperCase();
+    const pName = normalizeProvince(feature.properties.Propinsi);
     const data = riskMap[pName];
     return {
       fillColor: getColor(data?.kategori_risiko, data?.avg_skor_risiko),
@@ -55,7 +106,8 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
   };
 
   const onEachFeature = (feature, layer) => {
-    const pName = feature.properties.Propinsi.toUpperCase();
+    const geoJsonName = feature.properties.Propinsi;
+    const pName = normalizeProvince(geoJsonName);
     const data = riskMap[pName];
     
     layer.on({
@@ -74,14 +126,15 @@ export const MapComponent = ({ geoData, riskData, onRegionClick }) => {
       },
       click: (e) => {
         if (onRegionClick) {
-          onRegionClick(pName);
+          // Pass the database-compatible province name if available
+          onRegionClick(data ? data.provinsi : geoJsonName);
         }
       }
     });
 
     const tooltipContent = `
       <div style="font-family: var(--font-sans);">
-        <h4 style="font-size: 1.1rem; color: var(--text-main); border-bottom: 1px solid var(--border-light); margin-bottom: 8px; padding-bottom: 8px; font-weight: 700;">${pName}</h4>
+        <h4 style="font-size: 1.1rem; color: var(--text-main); border-bottom: 1px solid var(--border-light); margin-bottom: 8px; padding-bottom: 8px; font-weight: 700;">${data ? data.provinsi : geoJsonName}</h4>
         <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Filter: <b style="color: var(--text-main)">${filterType === 'semua' ? 'Keseluruhan' : (filterType === 'pemda' ? 'Pemerintah Daerah' : 'Kementerian / Lembaga')}</b></p>
         <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Proyek Anomali: <b style="color: var(--warning-orange)">${data ? data.total_anomalies.toLocaleString('id-ID') : 0}</b></p>
         <p style="margin: 4px 0; font-size: 0.9em; color: var(--text-secondary);">Potensi Kerugian: <b style="color: var(--danger-red)">${data ? formatRp(data.total_fraud_value_rp) : "Rp 0"}</b></p>

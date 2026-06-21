@@ -10,7 +10,6 @@ function App() {
   const [activeTab, setActiveTab] = useState('map');
   const [riskData, setRiskData] = useState(null);
   const [geoData, setGeoData] = useState(null);
-  const [anomaliesData, setAnomaliesData] = useState(null);
   const [loading, setLoading] = useState(true);
   
   // Global filter state to allow Map to communicate with DataExplorer
@@ -19,19 +18,16 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [riskRes, geoRes, anomaliesRes] = await Promise.all([
+        const [riskRes, geoRes] = await Promise.all([
           fetch(`/data/procurement_risk_map.json?v=${Date.now()}`),
-          fetch('/data/indonesia.geojson'),
-          fetch('/data/top_anomalies.json')
+          fetch('/data/indonesia.geojson')
         ]);
         
         const riskJson = await riskRes.json();
         const geoJson = await geoRes.json();
-        const anomaliesJson = await anomaliesRes.json();
         
         setRiskData(riskJson);
         setGeoData(geoJson);
-        setAnomaliesData(anomaliesJson);
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
