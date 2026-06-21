@@ -8,9 +8,10 @@ export default async function handler(req, res) {
 
   const { prov, lembaga, metode, search, limit = 100, page = 1 } = req.query;
 
+  let connection;
   try {
     // Buat koneksi ke TiDB Serverless
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       host: 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
       port: 4000,
       user: 'KnokxJmGN7Viird.root',
@@ -71,12 +72,14 @@ export default async function handler(req, res) {
     baseQuery += ` LIMIT ${numLimit} OFFSET ${offset}`;
 
     const [rows] = await connection.execute(baseQuery, values);
-    
-    await connection.end();
 
     return res.status(200).json({ data: rows, total: totalCount });
   } catch (error) {
     console.error('TiDB Error:', error);
     return res.status(500).json({ error: 'Failed to connect to TiDB Serverless', details: error.message });
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
   }
 }
