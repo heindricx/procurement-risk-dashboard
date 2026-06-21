@@ -159,6 +159,7 @@ body {
 .table-container {
   width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modern-table {
@@ -289,6 +290,53 @@ button.modern-btn:disabled {
   }
   .map-container {
     height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.2rem;
+  }
+  
+  .dashboard-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .modern-card {
+    padding: 1rem;
+  }
+  
+  .stat-card .value {
+    font-size: 2rem;
+  }
+
+  .modern-table th, .modern-table td {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+  }
+  
+  /* Filter wrapper responsive */
+  .filter-wrapper {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  .map-container {
+    height: 300px;
   }
 }
 
