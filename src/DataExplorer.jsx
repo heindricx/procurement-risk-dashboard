@@ -50,11 +50,11 @@ export const DataExplorer = () => {
       if (filterLembaga) query = query.ilike('lembaga', `%${filterLembaga}%`);
       if (searchQuery) query = query.ilike('agenda', `%${searchQuery}%`);
 
-      // Pagination & Sorting (Sort by fraud_value descending)
+      // Pagination & Sorting (Sort by skor_risiko descending)
       const from = (page - 1) * itemsPerPage;
       const to = from + itemsPerPage - 1;
 
-      query = query.order('fraud_value', { ascending: false }).range(from, to);
+      query = query.order('skor_risiko', { ascending: false }).range(from, to);
 
       const { data: records, error, count } = await query;
       
@@ -86,6 +86,33 @@ export const DataExplorer = () => {
     if (num >= 1e12) return `Rp ${(num / 1e12).toFixed(2)} T`;
     if (num >= 1e9) return `Rp ${(num / 1e9).toFixed(2)} M`;
     return `Rp ${(num / 1e6).toFixed(2)} Jt`;
+  };
+
+  const getRiskBadge = (category, score) => {
+    let color = '#10B981'; // Rendah (Green)
+    let bg = 'rgba(16, 185, 129, 0.1)';
+    
+    if (category === 'Sedang') {
+      color = '#F59E0B'; // Yellow
+      bg = 'rgba(245, 158, 11, 0.1)';
+    } else if (category === 'Tinggi') {
+      color = '#EF4444'; // Red
+      bg = 'rgba(239, 68, 68, 0.1)';
+    } else if (category === 'Anomali Ekstrem') {
+      color = '#7F1D1D'; // Dark Red
+      bg = 'rgba(127, 29, 29, 0.1)';
+    }
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <span style={{ background: bg, color: color, padding: '4px 8px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, display: 'inline-block', width: 'fit-content' }}>
+          {category || 'Rendah'}
+        </span>
+        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500, paddingLeft: '4px' }}>
+          Skor: {score ? score.toFixed(1) : '0.0'}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -150,6 +177,7 @@ export const DataExplorer = () => {
               <th>Pagu Asli</th>
               <th>Batas P90</th>
               <th>Potensi Fraud</th>
+              <th>Kategori Risiko</th>
             </tr>
           </thead>
           <tbody>
@@ -178,6 +206,9 @@ export const DataExplorer = () => {
                 <td style={{ color: 'var(--text-secondary)' }}>{formatRp(row.p90)}</td>
                 <td style={{ color: row.fraud_value > 0 ? 'var(--danger-red)' : 'inherit', fontWeight: row.fraud_value > 0 ? 600 : 400 }}>
                   {row.fraud_value > 0 ? '+' : ''}{formatRp(row.fraud_value)}
+                </td>
+                <td>
+                  {getRiskBadge(row.kategori_risiko, row.skor_risiko)}
                 </td>
               </motion.tr>
             ))}

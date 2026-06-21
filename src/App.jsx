@@ -51,7 +51,7 @@ function App() {
     <div className="dashboard-container">
       <header className="header">
         <div>
-          <h1>NOCTURNAL</h1>
+          <h1>PANTAUANG KITA</h1>
           <div className="header-subtitle">National Procurement Risk Radar</div>
         </div>
         
