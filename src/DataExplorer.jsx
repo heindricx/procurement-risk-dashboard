@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from './supabaseClient';
 import { Search, Database, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -54,28 +53,26 @@ export const DataExplorer = ({ initialProvince, onProvinceChange }) => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
-        .from('procurement_anomalies')
-        .select('*', { count: 'exact' });
-
-      // Apply Filters
-      if (debouncedProv) query = query.ilike('provinsi', `%${debouncedProv}%`);
-      if (debouncedMetode) query = query.ilike('metode', `%${debouncedMetode}%`);
-      if (debouncedLembaga) query = query.ilike('lembaga', `%${debouncedLembaga}%`);
-      if (debouncedSearch) query = query.ilike('agenda', `%${debouncedSearch}%`);
-
-      // Pagination & Sorting
-      const from = (page - 1) * itemsPerPage;
-      const to = from + itemsPerPage - 1;
-
-      query = query.order('skor_risiko', { ascending: false }).range(from, to);
-
-      const { data: records, error, count } = await query;
+      // Build query string
+      const params = new URLSearchParams();
+      if (debouncedProv) params.append('prov', debouncedProv);
+      if (debouncedMetode) params.append('metode', debouncedMetode);
+      if (debouncedLembaga) params.append('lembaga', debouncedLembaga);
+      if (debouncedSearch) params.append('search', debouncedSearch);
       
-      if (error) throw error;
+      // Limit set to 200 for frontend rendering performance
+      params.append('limit', '200');
+
+      const response = await fetch(`/api/get_anomalies?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Gagal mengambil data dari TiDB Serverless');
+      }
+
+      const result = await response.json();
+      const records = result.data || [];
       
-      setData(records || []);
-      if (count !== null) setTotalCount(count);
+      setData(records);
+      setTotalCount(records.length);
 
       // Simple client-side aggregation for charts based on current page data 
       // (For real prod we would do a separate aggregated query, but this works for interactivity demonstration)
